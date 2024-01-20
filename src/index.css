@@ -7,6 +7,16 @@ body{
   outline: 0;
   font-family: "Open sans", sans-serif;
 }
+body::-webkit-scrollbar{
+  width: 10px;
+}
+body::-webkit-scrollbar-track{
+  background-color: #efefef;
+}
+body::-webkit-scrollbar-thumb{
+  border-radius: 10px;
+  background-color: #444;
+}
 html, body, #root{
   background-color: #efefef;
   height: 100%;
