@@ -9,6 +9,9 @@
 .min_height{
     min-height: 75vh;
 }
+.center{
+    justify-content: center;
+}
 .start{
     justify-content: flex-start;
 }
