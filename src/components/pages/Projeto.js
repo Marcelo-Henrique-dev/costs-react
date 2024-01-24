@@ -8,7 +8,7 @@ function Projeto() {
   const [project, setProject] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/projetos/${id}`, {
+    fetch(`http://localhost:5000/projects/${id}`, {
       method: "GET",
       headers: {
         "Content-type": "application/json",
@@ -21,7 +21,7 @@ function Projeto() {
       .catch((err) => console.log(err));
   }, [id]);
 
-  return <p>{project.name}oi</p>;
+  return <p>{project.name}</p>;
 }
 
 export default Projeto;
