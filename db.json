@@ -8,8 +8,27 @@
         "id": "1",
         "name": "Infra"
       },
-      "cost": 0,
-      "services": []
+      "cost": 600,
+      "services": [
+        {
+          "name": "meu novo service",
+          "cost": "100",
+          "description": "aqui faz isso",
+          "id": "ef7e563d-e755-4731-86a8-ed79305abd5f"
+        },
+        {
+          "name": "meu novo service 2",
+          "cost": "300",
+          "description": "aqui faz isso",
+          "id": "61a5135a-28dd-49ce-8a11-3c1716925394"
+        },
+        {
+          "name": "meu novo service 3",
+          "cost": "200",
+          "description": "aqui faz isso",
+          "id": "234dd631-772a-47d6-902d-c7a7268c1f5a"
+        }
+      ]
     },
     {
       "id": "9f6f",

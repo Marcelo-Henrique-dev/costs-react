@@ -5,14 +5,16 @@ import Loading from "../layout/Loading";
 import Container from "../layout/Container";
 import ProjectForm from "../projects/ProjectForm";
 import Message from "../layout/Message";
+import ServiceForm from "../service/ServiceForm";
+import { parse, v4 as uuidv4 } from "uuid";
 
 function Projeto() {
   const { id } = useParams();
   const [project, setProject] = useState([]);
   const [showProjectForm, setShowProjectForm] = useState(false);
-  const [message, setMessage] = useState()
-  const [type, setType] = useState()
-  const [showServiceForm, setShowServiceForm] = useState(false)
+  const [message, setMessage] = useState();
+  const [type, setType] = useState();
+  const [showServiceForm, setShowServiceForm] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -31,11 +33,11 @@ function Projeto() {
   }, [id]);
 
   function editPost(project) {
-    setMessage('')
+    setMessage("");
     if (project.budget < project.cost) {
-      setMessage("O orçamento não pode ser menor que o custo do projeto!")
-      setType('error')
-      return false
+      setMessage("O orçamento não pode ser menor que o custo do projeto!");
+      setType("error");
+      return false;
     }
 
     fetch(`http://localhost:5000/projects/${project.id}`, {
@@ -48,8 +50,43 @@ function Projeto() {
       .then((resp) => resp.json())
       .then((data) => {
         setProject(data);
-        setShowProjectForm(false)
-        setMessage('Projeto Atualizado!')
+        setShowProjectForm(false);
+        setMessage("Projeto Atualizado!");
+        setType("success");
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function createService(project) {
+    setMessage('')
+
+    const lastService = project.services[project.services.length - 1];
+
+    lastService.id = uuidv4();
+
+    const lastServiceCost = lastService.cost;
+    const newCost = parseFloat(project.cost) + parseFloat(lastServiceCost);
+
+    if (newCost > parseFloat(project.budget)) {
+      setMessage("Orçamento ultrapassado, verifique o valor do serviço");
+      setType("error");
+      project.services.pop();
+      return false;
+    }
+
+    project.cost = newCost;
+
+    fetch(`http://localhost:5000/projects/${project.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(project),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data)
+        setMessage('Serviço adicionado com sucesso')
         setType('success')
       })
       .catch((err) => console.log(err));
@@ -59,8 +96,8 @@ function Projeto() {
     setShowProjectForm(!showProjectForm);
   }
 
-  function toggleServiceForm(){
-    setShowServiceForm(!showServiceForm)
+  function toggleServiceForm() {
+    setShowServiceForm(!showServiceForm);
   }
 
   return (
@@ -96,21 +133,25 @@ function Projeto() {
                 </div>
               )}
             </div>
-              <div className={styles.service_form_container}>
-                <h2>Adicione um serviço:</h2>
-                <button className={styles.btn} onClick={toggleServiceForm}>
-                  {!showServiceForm ? 'Adicionar Serviço' : 'Fechar'}
-                </button>
-                <div className={styles.project_info}>
-                  {showServiceForm && (
-                    <div>formulário do serviço</div>
-                  )}
-                </div>
+            <div className={styles.service_form_container}>
+              <h2>Adicione um serviço:</h2>
+              <button className={styles.btn} onClick={toggleServiceForm}>
+                {!showServiceForm ? "Adicionar Serviço" : "Fechar"}
+              </button>
+              <div className={styles.project_info}>
+                {showServiceForm && (
+                  <ServiceForm
+                    handleSubmit={createService}
+                    btnText="Adicionar Serviço"
+                    projectData={project}
+                  />
+                )}
               </div>
-              <h2>Serviços</h2>
-              <Container customClass="start">
-                    <p>itens de serviços</p>
-              </Container>
+            </div>
+            <h2>Serviços</h2>
+            <Container customClass="start">
+              <p>itens de serviços</p>
+            </Container>
           </Container>
         </div>
       ) : (
