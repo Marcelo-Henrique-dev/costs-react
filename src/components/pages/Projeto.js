@@ -7,10 +7,12 @@ import ProjectForm from "../projects/ProjectForm";
 import Message from "../layout/Message";
 import ServiceForm from "../service/ServiceForm";
 import { parse, v4 as uuidv4 } from "uuid";
+import ServiceCard from "../service/ServiceCard";
 
 function Projeto() {
   const { id } = useParams();
   const [project, setProject] = useState([]);
+  const [services, setServices] = useState([]);
   const [showProjectForm, setShowProjectForm] = useState(false);
   const [message, setMessage] = useState();
   const [type, setType] = useState();
@@ -57,8 +59,22 @@ function Projeto() {
       .catch((err) => console.log(err));
   }
 
+  useEffect(() => {
+    fetch(`http://localhost:5000/projects/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setServices(data.services)
+      })
+      .catch((err) => console.log(err));
+  }, [project.services]);
+
   function createService(project) {
-    setMessage('')
+    setMessage("");
 
     const lastService = project.services[project.services.length - 1];
 
@@ -79,15 +95,43 @@ function Projeto() {
     fetch(`http://localhost:5000/projects/${project.id}`, {
       method: "PATCH",
       headers: {
-        "Content-type": "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(project),
     })
       .then((resp) => resp.json())
       .then((data) => {
-        console.log(data)
-        setMessage('Serviço adicionado com sucesso')
-        setType('success')
+        setServices(data.services);
+        setShowServiceForm(false);
+        setMessage("Serviço adicionado com sucesso");
+        setType("success");
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function removeService(id, cost) {
+    const servicesUpdated = project.services.filter(
+      (service) => service.id != id
+    );
+
+    const projectUpdated = project;
+
+    projectUpdated.services = servicesUpdated;
+    projectUpdated.cost = parseFloat(projectUpdated.cost) - parseFloat(cost);
+
+    fetch(`http://localhost:5000/projects/${projectUpdated.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(projectUpdated),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setProject(projectUpdated);
+        setServices(servicesUpdated);
+        setMessage("Serviço removido com sucesso");
+        setType("success");
       })
       .catch((err) => console.log(err));
   }
@@ -122,6 +166,9 @@ function Projeto() {
                   <p>
                     <span>Total Usado:</span> R${project.cost}
                   </p>
+                  <p>
+                    <span>Restante:</span> R${project.budget - project.cost}
+                  </p>
                 </div>
               ) : (
                 <div className={styles.project_info}>
@@ -142,15 +189,26 @@ function Projeto() {
                 {showServiceForm && (
                   <ServiceForm
                     handleSubmit={createService}
-                    btnText="Adicionar Serviço"
+                    btnText="Adicionar Serviços"
                     projectData={project}
                   />
                 )}
               </div>
             </div>
             <h2>Serviços</h2>
-            <Container customClass="start">
-              <p>itens de serviços</p>
+            <Container customClass="center">
+              {services.length > 0 &&
+                services.map((service) => (
+                  <ServiceCard
+                    id={service.id}
+                    name={service.name}
+                    cost={service.cost}
+                    description={service.description}
+                    key={service.id}
+                    handleRemove={removeService}
+                  />
+                ))}
+              {services.length === 0 && <p>Não há serviços cadastrados</p>}
             </Container>
           </Container>
         </div>
