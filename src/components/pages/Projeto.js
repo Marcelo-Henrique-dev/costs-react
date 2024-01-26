@@ -6,7 +6,7 @@ import Container from "../layout/Container";
 import ProjectForm from "../projects/ProjectForm";
 import Message from "../layout/Message";
 import ServiceForm from "../service/ServiceForm";
-import { parse, v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import ServiceCard from "../service/ServiceCard";
 
 function Projeto() {
@@ -71,7 +71,7 @@ function Projeto() {
         setServices(data.services)
       })
       .catch((err) => console.log(err));
-  }, [project.services]);
+  }, [project.services, id]);
 
   function createService(project) {
     setMessage("");
@@ -111,7 +111,7 @@ function Projeto() {
 
   function removeService(id, cost) {
     const servicesUpdated = project.services.filter(
-      (service) => service.id != id
+      (service) => service.id !== id
     );
 
     const projectUpdated = project;
