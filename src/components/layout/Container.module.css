@@ -19,3 +19,7 @@
     flex-direction: column;
     justify-content: flex-start;
 }
+.column_center{
+    justify-content: center;
+    flex-direction: column;
+}

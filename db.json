@@ -1,35 +1,5 @@
 {
-  "projects": [
-    {
-      "id": "b615",
-      "name": "projeto01",
-      "budget": "20000",
-      "category": {
-        "id": "1",
-        "name": "Infra"
-      },
-      "cost": 15,
-      "services": [
-        {
-          "name": "Teste",
-          "cost": "15",
-          "description": "teste do id",
-          "id": "25a46317-d4f3-48dd-91f8-1dac2e964931"
-        }
-      ]
-    },
-    {
-      "id": "9f6f",
-      "name": "Projeto02 atualizado",
-      "budget": "20000",
-      "category": {
-        "id": "3",
-        "name": "Design"
-      },
-      "cost": 0,
-      "services": []
-    }
-  ],
+  "projects": [],
   "categories": [
     {
       "id": "1",
@@ -47,5 +17,6 @@
       "id": "4",
       "name": "Planejamento"
     }
-  ]
+  ],
+  "users": []
 }
